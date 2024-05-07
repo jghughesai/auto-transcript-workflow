@@ -53,6 +53,9 @@ def main():
     files = file_response["files"]
     for file in files:
       file_id = file.get("id")
+      request = service.files().get_media(fileId=file_id)
+      file = io.BytesIO()
+      downloader = MediaIoBaseDownload(file, request)
       print(file_id)
 
   except HttpError as error:
