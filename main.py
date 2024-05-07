@@ -15,15 +15,29 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+client = OpenAI()
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 def main():
-  file_content = download_files()
+  files_dict = download_files()
 
-def get_summary(file_content):
+  summary_dict = get_summary(files_dict)
+
+def get_summary(files):
+  for file in files["files"]:
+    file_content = file["file_content"]
+
+    completion = client.chat.completions.create(
+      model="gpt-4-turbo",
+      messages=[
+      {"role": "system", "content": "You are an expert summarizer of work meeting transcripts."},
+      {"role": "user", "content": f"Create a detailed and accurate summary of the following work meeting transcript: {file_content}"}
+      ]
+    )
+
+    print(f"\nSummary: {completion.choices[0].message.content}")
   pass
 
 def download_files():
@@ -69,7 +83,7 @@ def download_files():
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred getting the list of files: {error}")
   
-  files_content = {
+  files_dict = {
     "files": [
     ]
   }
@@ -92,13 +106,12 @@ def download_files():
       file_str = str(file_buffer.getvalue())
       print(file_str)
 
-      files_content["files"].append({
+      files_dict["files"].append({
         "name": file_name,
         "id": file_id,
         "file_content": file_str
       })
-      print(f"files_content: {files_content}")
-      return "hey"
+    return files_dict
   
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
