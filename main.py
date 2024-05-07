@@ -10,10 +10,23 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 def main():
+  file_content = download_files()
+
+def get_summary(file_content):
+  pass
+
+def download_files():
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
@@ -69,8 +82,8 @@ def main():
       while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {int(status.progress() * 100)}.")
-      file.getvalue()
-      return file.getvalue()
+      file_content = file.getvalue()
+      return file_content
   
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
