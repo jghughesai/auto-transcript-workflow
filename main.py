@@ -71,31 +71,33 @@ def download_files():
   
   files_content = {
     "files": [
-      # {"name": "Name", "file_content": "content", "id": "12345"},
-      # {"name": "Name", "file_content": "content", "id": "12345"}
     ]
   }
 
   try:
     files = file_response["files"]
-    i = 0
     for file in files:
-      print(i)
+      file_name = file.get("name")
+      print(f"file_name: {file_name}")
       file_id = file.get("id")
       print(file_id)
       request = service.files().get_media(fileId=file_id)
       print("request works")
-      file = io.BytesIO()
-      downloader = MediaIoBaseDownload(file, request)
+      file_buffer = io.BytesIO()
+      downloader = MediaIoBaseDownload(file_buffer, request)
       done = False
       while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {int(status.progress() * 100)}.")
-      file_str = str(file.getvalue())
+      file_str = str(file_buffer.getvalue())
       print(file_str)
-      files_content["files"] += [{f"file_content{i}": file_str}]
+
+      files_content["files"].append({
+        "name": file_name,
+        "id": file_id,
+        "file_content": file_str
+      })
       print(f"files_content: {files_content}")
-      i +=1
       return "hey"
   
   except HttpError as error:
