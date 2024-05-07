@@ -1,5 +1,6 @@
 import os
 import os.path
+import io
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -7,10 +8,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
-
 
 def main():
   creds = None
@@ -45,9 +46,14 @@ def main():
     folder_id = folder_response_result[0].get("id")
 
     file_response = service.files().list(
-      q = f"'{folder_id}' in parents"
+      q = f"'{folder_id}' in parents",
+      fields="files(id, name)"
     ).execute()
-    print(file_response)
+    print(f"{file_response}\n")
+    files = file_response["files"]
+    for file in files:
+      file_id = file.get("id")
+      print(file_id)
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
