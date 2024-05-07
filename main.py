@@ -37,7 +37,7 @@ def main():
     service = build("drive", "v3", credentials=creds)
 
     folder_response = service.files().list(
-      q="name='Inputs' and mimeType='application/vnd.google-apps.folder'",
+      q="name='api test' and mimeType='application/vnd.google-apps.folder'",
       spaces="drive",
       fields="files(id, name)"
     ).execute()
@@ -49,18 +49,32 @@ def main():
       q = f"'{folder_id}' in parents",
       fields="files(id, name)"
     ).execute()
+
     print(f"{file_response}\n")
-    files = file_response["files"]
-    for file in files:
-      file_id = file.get("id")
-      request = service.files().get_media(fileId=file_id)
-      file = io.BytesIO()
-      downloader = MediaIoBaseDownload(file, request)
-      print(file_id)
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
-    print(f"An error occurred: {error}")
+    print(f"An error occurred getting the list of files: {error}")
+  
+  try:
+    files = file_response["files"]
+    for file in files:
+      file_id = file.get("id")
+      print(file_id)
+      request = service.files().get_media(fileId=file_id)
+      print("request works")
+      file = io.BytesIO()
+      downloader = MediaIoBaseDownload(file, request)
+      done = False
+      while done is False:
+        status, done = downloader.next_chunk()
+        print(f"Download {int(status.progress() * 100)}.")
+      file.getvalue()
+      return file.getvalue()
+  
+  except HttpError as error:
+    # TODO(developer) - Handle errors from drive API.
+    print(f"An error occurred downloading the file(s): {error}")
 
 if __name__ == "__main__":
   main()
