@@ -69,9 +69,18 @@ def download_files():
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred getting the list of files: {error}")
   
+  files_content = {
+    "files": [
+      # {"name": "Name", "file_content": "content", "id": "12345"},
+      # {"name": "Name", "file_content": "content", "id": "12345"}
+    ]
+  }
+
   try:
     files = file_response["files"]
+    i = 0
     for file in files:
+      print(i)
       file_id = file.get("id")
       print(file_id)
       request = service.files().get_media(fileId=file_id)
@@ -82,8 +91,12 @@ def download_files():
       while done is False:
         status, done = downloader.next_chunk()
         print(f"Download {int(status.progress() * 100)}.")
-      file_content = file.getvalue()
-      return file_content
+      file_str = str(file.getvalue())
+      print(file_str)
+      files_content["files"] += [{f"file_content{i}": file_str}]
+      print(f"files_content: {files_content}")
+      i +=1
+      return "hey"
   
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
