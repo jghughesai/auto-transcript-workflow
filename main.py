@@ -42,7 +42,12 @@ def main():
     ).execute()
 
     folder_response_result = folder_response.get("files", [])
-    id = folder_response_result[0].get("id")
+    folder_id = folder_response_result[0].get("id")
+
+    file_response = service.files().list(
+      q = f"'{folder_id}' in parents"
+    ).execute()
+    print(file_response)
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
