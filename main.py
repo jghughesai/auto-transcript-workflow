@@ -13,9 +13,6 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 
 def main():
-  """Shows basic usage of the Drive v3 API.
-  Prints the names and ids of the first 10 files the user has access to.
-  """
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
@@ -38,33 +35,14 @@ def main():
   try:
     service = build("drive", "v3", credentials=creds)
 
-    response = service.files().list(
+    folder_response = service.files().list(
       q="name='Inputs' and mimeType='application/vnd.google-apps.folder'",
-      spaces="drive"
+      spaces="drive",
+      fields="files(id, name)"
     ).execute()
 
-    if not response['files']:
-      file_metadata = {
-        "name": "Inputs",
-        "mimeType": "application/vnd.google-apps.folder"
-      }
-
-      file = service.files().create(body=file_metadata, fields="id").execute()
-
-      folder_id = file.get('id')
-    else:
-      folder_id = response['files'][0]['id']
-
-    for file in os.listdir('files'):
-      file_metadata = {
-        "name": file,
-        "parents": [folder_id]
-      }
-
-      media = MediaFileUpload(f"files/{file}")
-      upload_file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-
-      print("Backed up file: " + file)
+    folder_response_result = folder_response.get("files", [])
+    id = folder_response_result[0].get("id")
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
