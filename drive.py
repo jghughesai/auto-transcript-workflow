@@ -22,50 +22,51 @@ def get_drive_files(creds, file_names):
     folder_response_result = folder_response.get("files", [])
     folder_id = folder_response_result[0].get("id")
 
+    file_ids = []
+
     for file_name in file_names:
         print(f"file_name: {file_name}")
         file_response = service.files().list(
         q = f"name='{file_name}' and '{folder_id}' in parents",
         fields="files(id, name)"
         ).execute()
+        print(f"file_response: {file_response}")
+        files = file_response["files"]
+        for file in files:
+          file_ids.append(file["id"])
 
-        print(f"\nfile response: {file_response}\n")
-    return "hi"
+    return file_ids, file_names, service
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred getting the list of files: {error}")
-  
-#   files_dict = {
-#     "files": [
-#     ]
-#   }
 
-#   try:
-#     files = file_response["files"]
-#     for file in files:
-#       file_name = file.get("name")
-#       print(f"file_name: {file_name}")
-#       file_id = file.get("id")
-#       print(file_id)
-#       request = service.files().get_media(fileId=file_id)
-#       print("request works")
-#       file_buffer = io.BytesIO()
-#       downloader = MediaIoBaseDownload(file_buffer, request)
-#       done = False
-#       while done is False:
-#         status, done = downloader.next_chunk()
-#         print(f"Download {int(status.progress() * 100)}.")
-#       file_str = str(file_buffer.getvalue())
-#       print(file_str)
+def download_files(service, file_names, file_ids):
+  files_dict = {
+    "files": [
+    ]
+  }
 
-#       files_dict["files"].append({
-#         "name": file_name,
-#         "id": file_id,
-#         "file_content": file_str
-#       })
-#     return files_dict
+  try:
+    for file_name, file_id in zip(file_names, file_ids):
+      print(f"file_name iteration: {file_name}")
+      print(f"file_id iteration: {file_id}")
+      request = service.files().get_media(fileId=file_id)
+      file_buffer = io.BytesIO()
+      downloader = MediaIoBaseDownload(file_buffer, request)
+      done = False
+      while done is False:
+        status, done = downloader.next_chunk()
+        print(f"Download {int(status.progress() * 100)}.")
+      file_str = str(file_buffer.getvalue())
+
+      files_dict["files"].append({
+        "name": file_name,
+        "id": file_id,
+        "file_content": file_str
+      })
+    return files_dict
   
-#   except HttpError as error:
-#     # TODO(developer) - Handle errors from drive API.
-#     print(f"An error occurred downloading the file(s): {error}")
+  except HttpError as error:
+    # TODO(developer) - Handle errors from drive API.
+    print(f"An error occurred downloading the file(s): {error}")
