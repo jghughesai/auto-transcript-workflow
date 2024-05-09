@@ -15,6 +15,16 @@ FOLDER_ID = "1LmIfg3k1lb9qkRRXz7N8wvZxn4Dqpjt7"
 
 titles = []
 
+def main():
+  service = authorize_activity_api()
+  time_filter = get_time_filter()
+  activities = get_activities(service, time_filter)
+  if not activities:
+    print("No activity.")
+  else:
+    file_names = get_file_names(activities)
+    print(f"file names: {file_names}")
+
 def authorize_activity_api():
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
@@ -28,7 +38,7 @@ def authorize_activity_api():
       creds.refresh(Request())
     else:
       flow = InstalledAppFlow.from_client_secrets_file(
-          "credentials.json", SCOPES
+          "../credentials.json", SCOPES
       )
       creds = flow.run_local_server(port=0)
     # Save the credentials for the next run
@@ -46,25 +56,23 @@ def get_activities(service, time_filter):
       }).execute()
   activities = results.get("activities", [])
   if not activities:
-    print("No activity.")
     return None
   else:
-    print("Recent activity:")
     return activities
   
 def get_file_names(activities):
-  for activity in activities:
-    targets = map(get_target_info, activity["targets"])
-    targets_str = ""
-    target_name = targets_str.join(targets)
-    
-    print(f"target name: {target_name}")
-    return target_name
+    print("Recent activity:")
+    file_names = []
+    for activity in activities:
+      targets = map(get_target_info, activity["targets"])
+      targets_str = ",".join(targets)
+      print(f"targets_str: {targets_str}")
+      file_names.append(targets_str)
+    return file_names
 
 def get_time_filter():
   four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=4)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
-  print(time_filter)
   return time_filter
 
 def get_target_info(target):
@@ -82,50 +90,6 @@ def get_target_info(target):
       return title
   except Exception as e:
     return f"Error getting target title: {e}"
-
-
-def main():
-  # Call the Drive Activity API
-  try:
-    results = service.activity().query(body={
-            "pageSize": 10,
-            "ancestorName": f"items/{FOLDER_ID}",
-            "filter": f"time >= \"{time_filter}\" detail.action_detail_case:CREATE"
-        }).execute()
-    activities = results.get("activities", [])
-
-    if not activities:
-      print("No activity.")
-    else:
-      print("Recent activity:")
-      for activity in activities:
-        targets = map(getTargetInfo, activity["targets"])
-        targets_str = ""
-        target_name = targets_str.join(targets)
-
-        # Print the action occurred on drive with actor, target item and timestamp
-        print(f"target name: {target_name}")
-        return target_name
-
-  except HttpError as error:
-    # TODO(developer) - Handleerrors from drive activity API.
-    print(f"An error occurred: {error}")
-
-# Returns the type of a target and an associated title.
-def getTargetInfo(target):
-  if "driveItem" in target:
-    title = target["driveItem"].get("title", "unknown")
-    titles.append(title)
-    return title
-  if "drive" in target:
-    title = target["drive"].get("title", "unknown")
-    return title
-  if "fileComment" in target:
-    parent = target["fileComment"].get("parent", {})
-    title = parent.get("title", "unknown")
-    return title
-  return NameError
-
 
 if __name__ == "__main__":
   main()
