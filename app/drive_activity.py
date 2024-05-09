@@ -38,3 +38,9 @@ def authorize_activity_api():
   service = build("driveactivity", "v2", credentials=creds)
   return service
 
+def get_time_filter():
+  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=4)
+  time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+  print(time_filter)
+  return time_filter
+
