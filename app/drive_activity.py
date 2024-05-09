@@ -54,10 +54,10 @@ def get_activities(service, time_filter):
   
 def get_file_names(activities):
   for activity in activities:
-    targets = map(getTargetInfo, activity["targets"])
+    targets = map(get_target_info, activity["targets"])
     targets_str = ""
     target_name = targets_str.join(targets)
-
+    
     print(f"target name: {target_name}")
     return target_name
 
@@ -67,5 +67,65 @@ def get_time_filter():
   print(time_filter)
   return time_filter
 
-def getTargetInfo():
-  pass
+def get_target_info(target):
+  try:
+    if "driveItem" in target:
+      title = target["driveItem"].get("title", "unknown")
+      titles.append(title)
+      return title
+    if "drive" in target:
+      title = target["drive"].get("title", "unknown")
+      return title
+    if "fileComment" in target:
+      parent = target["fileComment"].get("parent", {})
+      title = parent.get("title", "unknown")
+      return title
+  except Exception as e:
+    return f"Error getting target title: {e}"
+
+
+def main():
+  # Call the Drive Activity API
+  try:
+    results = service.activity().query(body={
+            "pageSize": 10,
+            "ancestorName": f"items/{FOLDER_ID}",
+            "filter": f"time >= \"{time_filter}\" detail.action_detail_case:CREATE"
+        }).execute()
+    activities = results.get("activities", [])
+
+    if not activities:
+      print("No activity.")
+    else:
+      print("Recent activity:")
+      for activity in activities:
+        targets = map(getTargetInfo, activity["targets"])
+        targets_str = ""
+        target_name = targets_str.join(targets)
+
+        # Print the action occurred on drive with actor, target item and timestamp
+        print(f"target name: {target_name}")
+        return target_name
+
+  except HttpError as error:
+    # TODO(developer) - Handleerrors from drive activity API.
+    print(f"An error occurred: {error}")
+
+# Returns the type of a target and an associated title.
+def getTargetInfo(target):
+  if "driveItem" in target:
+    title = target["driveItem"].get("title", "unknown")
+    titles.append(title)
+    return title
+  if "drive" in target:
+    title = target["drive"].get("title", "unknown")
+    return title
+  if "fileComment" in target:
+    parent = target["fileComment"].get("parent", {})
+    title = parent.get("title", "unknown")
+    return title
+  return NameError
+
+
+if __name__ == "__main__":
+  main()
