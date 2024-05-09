@@ -51,6 +51,15 @@ def get_activities(service, time_filter):
   else:
     print("Recent activity:")
     return activities
+  
+def get_file_names(activities):
+  for activity in activities:
+    targets = map(getTargetInfo, activity["targets"])
+    targets_str = ""
+    target_name = targets_str.join(targets)
+
+    print(f"target name: {target_name}")
+    return target_name
 
 def get_time_filter():
   four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=4)
@@ -58,3 +67,5 @@ def get_time_filter():
   print(time_filter)
   return time_filter
 
+def getTargetInfo():
+  pass
