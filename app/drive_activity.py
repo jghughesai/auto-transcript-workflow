@@ -38,6 +38,20 @@ def authorize_activity_api():
   service = build("driveactivity", "v2", credentials=creds)
   return service
 
+def get_activities(service, time_filter):
+  results = service.activity().query(body={
+          "pageSize": 10,
+          "ancestorName": f"items/{FOLDER_ID}",
+          "filter": f"time >= \"{time_filter}\" detail.action_detail_case:CREATE"
+      }).execute()
+  activities = results.get("activities", [])
+  if not activities:
+    print("No activity.")
+    return None
+  else:
+    print("Recent activity:")
+    return activities
+
 def get_time_filter():
   four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=4)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
