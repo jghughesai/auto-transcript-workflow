@@ -25,12 +25,10 @@ def get_drive_files(creds, file_names):
     file_ids = []
 
     for file_name in file_names:
-        print(f"file_name: {file_name}")
         file_response = service.files().list(
         q = f"name='{file_name}' and '{folder_id}' in parents",
         fields="files(id, name)"
         ).execute()
-        print(f"file_response: {file_response}")
         files = file_response["files"]
         for file in files:
           file_ids.append(file["id"])
@@ -40,6 +38,7 @@ def get_drive_files(creds, file_names):
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred getting the list of files: {error}")
+    return f"An error occurred getting the list of files: {error}"
 
 def download_files(service, file_names, file_ids):
   files_dict = {
@@ -49,15 +48,13 @@ def download_files(service, file_names, file_ids):
 
   try:
     for file_name, file_id in zip(file_names, file_ids):
-      print(f"file_name iteration: {file_name}")
-      print(f"file_id iteration: {file_id}")
       request = service.files().get_media(fileId=file_id)
       file_buffer = io.BytesIO()
       downloader = MediaIoBaseDownload(file_buffer, request)
       done = False
       while done is False:
         status, done = downloader.next_chunk()
-        print(f"Download {int(status.progress() * 100)}.")
+        # print(f"Download {int(status.progress() * 100)}.")
       file_str = str(file_buffer.getvalue())
 
       files_dict["files"].append({
