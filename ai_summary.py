@@ -9,6 +9,7 @@ def get_summary(files):
   response_dict = {
     "responses": []
   }
+  # print(f"files in get_summary func: {files}")
   for file in files["files"]:
     file_name = file["name"]
     file_id = file["id"]

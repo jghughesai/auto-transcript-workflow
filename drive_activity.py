@@ -70,7 +70,7 @@ def get_file_names(activities):
     return file_names
 
 def get_time_filter():
-  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=4)
+  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=5)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
   return time_filter
 
