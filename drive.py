@@ -38,7 +38,7 @@ def get_drive_files(creds, file_names):
           print(f"file[id]: {file['id']}")
           print(f"file_ids: {file_ids}")
 
-    return file_ids, file_names, service
+    return file_ids, file_names, service, folder_id
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
@@ -79,5 +79,14 @@ def download_files(service, file_names, file_ids):
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred downloading the file(s): {error}")
 
-def upload_file():
-  pass
+def upload_file(service, folder_id):
+  for file in os.listdir('files'):
+      file_metadata = {
+        "name": file,
+        "parents": [folder_id]
+      }
+
+      media = MediaFileUpload(f"files/{file}")
+      upload_file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+
+      print(f"Uploaded file: {file}.")
