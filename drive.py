@@ -1,7 +1,7 @@
 import os
 import os.path
 import io
-
+import logging
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -24,19 +24,16 @@ def get_drive_files(creds):
 
     return service, folder_id
 
-  except HttpError as error:
+  except HttpError as e:
     # TODO(developer) - Handle errors from drive API.
-    print(f"An error occurred getting the list of files: {error}")
-    return f"An error occurred getting the list of files: {error}"
+    logging.error(f"An error occurred getting the list of files: {e}")
+    print(f"An error occurred getting the list of files: {e}")
 
 def download_files(service, file_ids, file_names):
   files_dict = {
     "files": [
     ]
   }
-
-  print(f"file_names in download_files(): {file_names}")
-  print(f"file_ids in download_files(): {file_ids}")
 
   try:
     for file_name, file_id in zip(file_names, file_ids):
@@ -58,23 +55,28 @@ def download_files(service, file_ids, file_names):
       })
     return files_dict
   
-  except HttpError as error:
+  except HttpError as e:
     # TODO(developer) - Handle errors from drive API.
-    print(f"An error occurred downloading the file(s): {error}")
+    logging.error(f"An error occurred downloading the file(s): {e}")
+    print(f"An error occurred downloading the file(s): {e}")
 
 def upload_file(service, folder_id):
-  for file in os.listdir('files'):
-      file_metadata = {
-        "name": file,
-        "parents": [folder_id]
-      }
+  try:
+    for file in os.listdir('files'):
+        file_metadata = {
+          "name": file,
+          "parents": [folder_id]
+        }
 
-      media = MediaFileUpload(f"files/{file}")
-      upload_file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+        media = MediaFileUpload(f"files/{file}")
+        upload_file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
 
-      print(f"\nUploaded file: {file}.")
+        print(f"\nUploaded file: {file}.")
   
-  delete_files_in_dir()
+    delete_files_in_dir()
+  except HttpError as e:
+    logging.error(f"An error occurred uploading the file(s): {e}")
+    print(f"An error occurred uploading the file(s): {e}")
 
 def delete_files_in_dir():
   try:
