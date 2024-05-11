@@ -63,8 +63,11 @@ def download_files(service, file_ids, file_names):
   except HttpError as e:
     # TODO(developer) - Handle errors from drive API.
     logging.error(f"An error occurred downloading the file(s): {e}")
-    print(f"An error occurred downloading the file(s): {e}")
-
+    return None
+  except Exception as e:
+    logging.error(f"Unexpected error: {e}")
+    return None
+  
 def upload_file(service, folder_id):
   try:
     for file in os.listdir('files'):

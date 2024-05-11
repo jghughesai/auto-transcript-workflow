@@ -24,6 +24,9 @@ def main():
     print("\n\nget_drive_files func call completed.")
 
     files_dict = download_files(service2, target_ids, target_names)
+    if files_dict is None:
+      notify_user("Unable to download files.")
+      return
     print("\n\ndownload_files func call completed.")
     print(f"files_dict: {files_dict}")
 
