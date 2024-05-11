@@ -1,0 +1,26 @@
+:root {
+    --main-surface: #d4dadf;
+    --secondary-surface: #f0f0f0;
+    --sidebar-surface: #d4d4d4;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+}
+
+
+header {
+    background-color: var(--main-surface);
+    border-bottom: 1px solid lightgray;
+}
+
+.side-bar {
+    background-color: var(--sidebar-surface);
+}
+
+.content {
+    background-color: var(--secondary-surface);
+}
