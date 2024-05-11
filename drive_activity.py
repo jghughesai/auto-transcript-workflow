@@ -12,17 +12,7 @@ from datetime import timezone
 SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.activity.readonly"]
 
 
-FOLDER_ID = "1LmIfg3k1lb9qkRRXz7N8wvZxn4Dqpjt7"
-
-def main():
-  service = authorize_activity_api()
-  time_filter = get_time_filter()
-  activities = get_activities(service, time_filter)
-  if not activities:
-    print("No activity.")
-  else:
-    file_names = get_file_names(activities)
-    print(f"file names: {file_names}")
+FOLDER_ID = "1VhPfEVWzfTah_7DCVVH2ZrL7ax652qAG"
 
 def authorize_activity_api():
   creds = None
@@ -59,11 +49,11 @@ def get_activities(service, time_filter):
   else:
     return activities
   
-def get_file_names(activities):
+def get_file_info(activities):
     file_ids = []
     file_names = []
     for activity in activities:
-      ids = map(get_target_info, activity["targets"])
+      ids = map(get_target_ids, activity["targets"])
       names = map(get_target_titles, activity["targets"])
       ids_str = ",".join(ids)
       names_str = ",".join(names)
@@ -76,32 +66,20 @@ def get_time_filter():
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
   return time_filter
 
-def get_target_info(target):
+def get_target_ids(target):
   try:
     if "driveItem" in target:
-      print("conditional for driveItem")
-      title = target["driveItem"].get("title", "unknown")
       name = target["driveItem"].get("name", "unknown")
-      print(f"title: {title}")
       target_id = name[6:]
-      print(f"target_id: {target_id}")
       return target_id
     if "drive" in target:
-      print("conditional for drive")
-      title = target["drive"].get("title", "unknown")
       name = target["drive"].get("name", "unknown")
-      print(f"title: {title}")
       target_id = name[6:]
-      print(f"target_id: {target_id}")
       return target_id
     if "fileComment" in target:
-      print("conditional for fileComment")
       parent = target["fileComment"].get("parent", {})
-      title = parent.get("title", "unknown")
       name = parent.get("name", "unknown")
-      print(f"title: {title}")
       target_id = name[6:]
-      print(f"target_id: {target_id}")
       return target_id
   except Exception as e:
     return ("error", f"Error getting target title: {e}")
@@ -109,23 +87,14 @@ def get_target_info(target):
 def get_target_titles(target):
   try:
     if "driveItem" in target:
-      print("conditional for driveItem")
       title = target["driveItem"].get("title", "unknown")
-      print(f"title: {title}")
       return title
     if "drive" in target:
-      print("conditional for drive")
       title = target["drive"].get("title", "unknown")
-      print(f"title: {title}")
       return title
     if "fileComment" in target:
-      print("conditional for fileComment")
       parent = target["fileComment"].get("parent", {})
       title = parent.get("title", "unknown")
-      print(f"title: {title}")
       return title
   except Exception as e:
     return ("error", f"Error getting target title: {e}")
-
-if __name__ == "__main__":
-  main()
