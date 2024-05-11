@@ -14,33 +14,13 @@ def get_drive_files(creds):
   try:
     service = build("drive", "v3", credentials=creds)
     folder_response = service.files().list(
-    q="name='file test' and mimeType='application/vnd.google-apps.folder'",
+    q="name='Outputs Test' and mimeType='application/vnd.google-apps.folder'",
     spaces="drive",
     fields="files(id, name)"
     ).execute()
 
     folder_response_result = folder_response.get("files", [])
     folder_id = folder_response_result[0].get("id")
-
-    # file_ids = []
-    # print(f"file_ids: {file_ids}")
-
-    # for target_id in target_ids:
-    #     print(f"target_id in bad loop: {target_id}")
-    #     file_response = service.files().list(
-    #     q = f"'{folder_id}' in parents",
-    #     fields="files(id, name)"
-    #     ).execute()
-    #     files = file_response["files"]
-    #     print(f"\n\n\nfiles response: {files}\n\n\n")
-    #     for file in files:
-    #       if file['id'] == target_id:
-    #         print(f"file['id'] matches target_id.")
-    #         print(f"file['id'] {file['id']}")
-    #         print(f"target_id {target_id}")
-    #       file_ids.append(file["id"])
-    #       # print(f"file[id]: {file['id']}")
-    #       # print(f"file_ids: {file_ids}")
 
     return service, folder_id
 
@@ -63,7 +43,6 @@ def download_files(service, file_ids, file_names):
       request = service.files().get_media(fileId=file_id)
 
       file_buffer = io.BytesIO()
-      test = str(file_buffer)
 
       downloader = MediaIoBaseDownload(file_buffer, request)
       done = False
