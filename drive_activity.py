@@ -63,7 +63,8 @@ def get_file_names(activities):
     file_ids = []
     file_names = []
     for activity in activities:
-      ids, names = map(get_target_info, activity["targets"])
+      ids = map(get_target_info, activity["targets"])
+      names = map(get_target_titles, activity["targets"])
       ids_str = ",".join(ids)
       names_str = ",".join(names)
       file_ids.append(ids_str)
@@ -71,36 +72,60 @@ def get_file_names(activities):
     return file_ids, file_names
 
 def get_time_filter():
-  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=4)
+  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=2)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
   return time_filter
 
 def get_target_info(target):
   try:
     if "driveItem" in target:
+      print("conditional for driveItem")
       title = target["driveItem"].get("title", "unknown")
       name = target["driveItem"].get("name", "unknown")
-      print(f"name id: {name}")
+      print(f"title: {title}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      return target_id, title
+      return target_id
     if "drive" in target:
+      print("conditional for drive")
       title = target["drive"].get("title", "unknown")
       name = target["drive"].get("name", "unknown")
-      print(f"name id: {name}")
+      print(f"title: {title}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      return target_id, title
+      return target_id
     if "fileComment" in target:
+      print("conditional for fileComment")
       parent = target["fileComment"].get("parent", {})
       title = parent.get("title", "unknown")
       name = parent.get("name", "unknown")
-      print(f"name id: {name}")
+      print(f"title: {title}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      return target_id, title
+      return target_id
   except Exception as e:
-    return f"Error getting target title: {e}"
+    return ("error", f"Error getting target title: {e}")
+
+def get_target_titles(target):
+  try:
+    if "driveItem" in target:
+      print("conditional for driveItem")
+      title = target["driveItem"].get("title", "unknown")
+      print(f"title: {title}")
+      return title
+    if "drive" in target:
+      print("conditional for drive")
+      title = target["drive"].get("title", "unknown")
+      print(f"title: {title}")
+      return title
+    if "fileComment" in target:
+      print("conditional for fileComment")
+      parent = target["fileComment"].get("parent", {})
+      title = parent.get("title", "unknown")
+      print(f"title: {title}")
+      return title
+  except Exception as e:
+    return ("error", f"Error getting target title: {e}")
 
 if __name__ == "__main__":
   main()
