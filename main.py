@@ -19,6 +19,8 @@ def main():
     
     service2, folder_id = get_drive_files(creds)
     if service2 is None or folder_id is None:
+      notify_user("Unable to access Google Drive. Please check your network connection and try again later.")
+      return
     print("\n\nget_drive_files func call completed.")
 
     files_dict = download_files(service2, target_ids, target_names)
