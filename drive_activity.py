@@ -14,8 +14,6 @@ SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/a
 
 FOLDER_ID = "1LmIfg3k1lb9qkRRXz7N8wvZxn4Dqpjt7"
 
-titles = []
-
 def main():
   service = authorize_activity_api()
   time_filter = get_time_filter()
@@ -62,12 +60,16 @@ def get_activities(service, time_filter):
     return activities
   
 def get_file_names(activities):
+    file_ids = []
     file_names = []
     for activity in activities:
-      targets = map(get_target_info, activity["targets"])
-      targets_str = ",".join(targets)
-      file_names.append(targets_str)
-    return file_names
+      ids, names = map(get_target_info, activity["targets"])
+      ids_str = ",".join(ids)
+      names_str = ",".join(names)
+      file_ids.append(ids_str)
+      file_names.append(names_str)
+    print(f"file_ids in get_file_names func: {file_ids}")
+    return file_ids, file_names
 
 def get_time_filter():
   four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=4)
@@ -82,23 +84,22 @@ def get_target_info(target):
       print(f"name id: {name}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      titles.append(title)
-      return title, target_id
+      return target_id, title
     if "drive" in target:
       title = target["drive"].get("title", "unknown")
-      name = target["driveItem"].get("name", "unknown")
+      name = target["drive"].get("name", "unknown")
       print(f"name id: {name}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      return title, target_id
+      return target_id, title
     if "fileComment" in target:
       parent = target["fileComment"].get("parent", {})
       title = parent.get("title", "unknown")
-      name = target["driveItem"].get("name", "unknown")
+      name = parent.get("name", "unknown")
       print(f"name id: {name}")
       target_id = name[6:]
       print(f"target_id: {target_id}")
-      return title, target_id
+      return target_id, title
   except Exception as e:
     return f"Error getting target title: {e}"
 
