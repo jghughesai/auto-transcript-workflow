@@ -14,7 +14,7 @@ def get_drive_files(creds):
   try:
     service = build("drive", "v3", credentials=creds)
     folder_response = service.files().list(
-    q="name='Outputs Test' and mimeType='application/vnd.google-apps.folder'",
+    q="name='Transcript Outputs' and mimeType='application/vnd.google-apps.folder'",
     spaces="drive",
     fields="files(id, name)"
     ).execute()

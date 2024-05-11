@@ -1,5 +1,5 @@
 import os.path
-import logging
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -12,14 +12,12 @@ from datetime import timezone
 SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.activity.readonly"]
 
 
-FOLDER_ID = "1VhPfEVWzfTah_7DCVVH2ZrL7ax652qAG"
+FOLDER_ID = "1h3_PAAGz9ewap6cqy1RihniOVe7KfoG4"
 
 def authorize_activity_api():
   creds = None
-
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first time.
-
   if os.path.exists("token.json"):
     creds = Credentials.from_authorized_user_file("token.json", SCOPES)
   # If there are no (valid) credentials available, let the user log in.
@@ -34,12 +32,9 @@ def authorize_activity_api():
     # Save the credentials for the next run
     with open("token.json", "w") as token:
       token.write(creds.to_json())
-  try:
-    service = build("driveactivity", "v2", credentials=creds)
-    return service, creds
-  except HttpError as e:
-    logging.error(f"HTTP error constructing google activity API resource: {e}")
-    return f"Error connecting to Google Drive Activity API: {e}"
+
+  service = build("driveactivity", "v2", credentials=creds)
+  return service, creds
 
 def get_activities(service, time_filter):
   results = service.activity().query(body={
