@@ -12,7 +12,7 @@ def main():
     print("No activity.")
   else:
     print("Recent activity:")
-    target_ids, target_names = get_file_names(activities)
+    target_ids, target_names = get_file_info(activities)
     print("\n\nget_file_name func call completed.")
     print(f"target ids: {target_ids}")
     print(f"target names: {target_names}")
