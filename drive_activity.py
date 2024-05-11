@@ -70,7 +70,7 @@ def get_file_names(activities):
     return file_names
 
 def get_time_filter():
-  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=5)
+  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=4)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
   return time_filter
 
@@ -78,15 +78,27 @@ def get_target_info(target):
   try:
     if "driveItem" in target:
       title = target["driveItem"].get("title", "unknown")
+      name = target["driveItem"].get("name", "unknown")
+      print(f"name id: {name}")
+      target_id = name[6:]
+      print(f"target_id: {target_id}")
       titles.append(title)
-      return title
+      return title, target_id
     if "drive" in target:
       title = target["drive"].get("title", "unknown")
-      return title
+      name = target["driveItem"].get("name", "unknown")
+      print(f"name id: {name}")
+      target_id = name[6:]
+      print(f"target_id: {target_id}")
+      return title, target_id
     if "fileComment" in target:
       parent = target["fileComment"].get("parent", {})
       title = parent.get("title", "unknown")
-      return title
+      name = target["driveItem"].get("name", "unknown")
+      print(f"name id: {name}")
+      target_id = name[6:]
+      print(f"target_id: {target_id}")
+      return title, target_id
   except Exception as e:
     return f"Error getting target title: {e}"
 
