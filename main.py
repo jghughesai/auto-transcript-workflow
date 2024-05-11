@@ -16,8 +16,9 @@ def main():
     print("\n\nget_file_name func call completed.")
     print(f"target ids: {target_ids}")
     print(f"target names: {target_names}")
-
+    
     service2, folder_id = get_drive_files(creds)
+    if service2 is None or folder_id is None:
     print("\n\nget_drive_files func call completed.")
 
     files_dict = download_files(service2, target_ids, target_names)
@@ -42,6 +43,9 @@ def create_output_files(summaries):
 
     f = open(f"files/Summary-{file_name}", "w+")
     f.write(file_content)
+
+def notify_user(message):
+  print(message)
 
 if __name__ == "__main__":
   main()
