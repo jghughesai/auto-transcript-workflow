@@ -25,10 +25,15 @@ def get_drive_files(creds):
     return service, folder_id
 
   except HttpError as e:
-    # TODO(developer) - Handle errors from drive API.
     logging.error(f"An error occurred getting the list of files: {e}")
-    print(f"An error occurred getting the list of files: {e}")
-
+    return None, None 
+  except IndexError as e:
+    logging.error(f"Index Error, no folders returned: {e}")
+    return None, None 
+  except Exception as e:
+    logging.error(f"Unexpected error: {e}")
+    return None, None 
+  
 def download_files(service, file_ids, file_names):
   files_dict = {
     "files": [
