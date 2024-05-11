@@ -39,7 +39,6 @@ def create_output_files(summaries):
   for summary in summaries:
     file_name = summary['name']
     file_content = summary['summary_content']
-    print(f"\n\nfile_content: {file_content}\n\n")
 
     f = open(f"files/Summary-{file_name}", "w+")
     f.write(file_content)
