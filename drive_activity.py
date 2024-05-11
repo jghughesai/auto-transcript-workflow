@@ -68,7 +68,6 @@ def get_file_names(activities):
       names_str = ",".join(names)
       file_ids.append(ids_str)
       file_names.append(names_str)
-    print(f"file_ids in get_file_names func: {file_ids}")
     return file_ids, file_names
 
 def get_time_filter():
