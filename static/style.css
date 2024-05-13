@@ -2,6 +2,7 @@
     --main-surface: #d4dadf;
     --secondary-surface: #f0f0f0;
     --sidebar-surface: #d4d4d4;
+    --main-font: rgb(51, 51, 51);
 }
 
 * {
@@ -15,12 +16,45 @@
 header {
     background-color: var(--main-surface);
     border-bottom: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgb(182, 182, 182);
+    max-height: 101px;
+    z-index: 999;
+    position: relative;
+}
+
+.title {
+    color: rgb(25, 42, 78);
+}
+
+.sub-title {
+    color: var(--main-font);
+}
+
+.main {
+    height: 100vh;
 }
 
 .side-bar {
     background-color: var(--sidebar-surface);
+    color: var(--main-font);
+    width: 15%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 0;
+}
+
+.side-bar-content-container {
+    display: block;
+    margin-top: 101px;
+    padding: 10px 10px;
 }
 
 .content {
     background-color: var(--secondary-surface);
+    position: absolute;
+    display: none;
 }
