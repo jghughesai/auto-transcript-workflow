@@ -69,6 +69,14 @@ header {
     background-color: var(--secondary-surface);
     position: absolute;
     width: 100vw;
+    padding-top: 101px;
     padding-left: 233px;
     z-index: 0;
+    height: 100%;
+    top: 0;
+}
+
+.content-container {
+    padding: 30px;
+    display: flex;
 }
