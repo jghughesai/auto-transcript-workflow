@@ -9,8 +9,10 @@ app.config["TESTING"] = True
 def index():
     return render_template("index.html")
 
-
-
+@app.route("/run_main", methods=["POST"])
+def run_main():
+    main()
+    return "Completed run"
 
 
 
