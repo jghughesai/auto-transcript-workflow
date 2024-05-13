@@ -11,11 +11,8 @@ def index():
 
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
-    main()
-    response = make_response("", 204)
+    response = main()
     return response
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
