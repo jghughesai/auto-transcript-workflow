@@ -40,11 +40,13 @@ header {
 .side-bar {
     background-color: var(--sidebar-surface);
     color: var(--main-font);
-    width: 15%;
+    width: 233px;
+    min-width: 233px;
+    max-width: 233px;
     height: 100%;
     position: absolute;
     top: 0;
-    z-index: 0;
+    z-index: 99;
 }
 
 .side-bar-content-container {
@@ -53,8 +55,20 @@ header {
     padding: 10px 10px;
 }
 
+.side-bar-header {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.step-card {
+    padding: 4px 0;
+    font-size: 14px;
+}
+
 .content {
     background-color: var(--secondary-surface);
     position: absolute;
-    display: none;
+    width: 100vw;
+    padding-left: 233px;
+    z-index: 0;
 }
