@@ -17,6 +17,7 @@ def main():
 
     if not activities:
       print("No activity.")
+      return None
     else:
       print("Recent activity:")
       target_ids, target_names = get_file_info(activities)
@@ -49,6 +50,7 @@ def main():
 
       upload_file(service2, folder_id)
       print("\n\nupload_file func call completed.")
+      return "success"
   except Exception as e:
     logging.error(f"Unexpected global error: {e}")
     return
