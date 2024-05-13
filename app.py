@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response
 from main import main
 
 app = Flask(__name__, template_folder="templates")
@@ -9,10 +9,11 @@ app.config["TESTING"] = True
 def index():
     return render_template("index.html")
 
-@app.route("/run_main", methods=["POST"])
+@app.route("/run_main", methods=["POST", "GET"])
 def run_main():
     main()
-    return "Completed run"
+    response = make_response("", 204)
+    return response
 
 
 
