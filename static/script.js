@@ -19,21 +19,33 @@ runBtn.addEventListener("click", () => {
         })
 })
 
-function displayResponse(data) {
+async function displayResponse(data) {
     if (data === "success") {
-        const sideBarItem = document.createElement("div");
-        sideBarItem.classList.add("step-card");
-        sideBarContainer.append(sideBarItem);
-        const sideBarItemPara = document.createElement("p");
-        sideBarItemPara.textContent = "Successfully retrieved the AI generated summary of your transcript and uploaded it to your outputs folder."
-        sideBarItem.append(sideBarItemPara);
+        let steps = ["Connected to Google Drive Activity API.", "Retrieved Google Drive activities from inputs folder.", "Downloaded files to local dir.", "Generated AI Summary.", "Your AI summary was successfully uploaded to the outputs folder in your Google Drive!"]
+        createSideBarElements(steps);
     }
     else {
+        let steps = ["No Google Drive activity detected. Perhaps you forgot to add a transcript to the inputs folder?"]
+        createSideBarElements(steps);
+    }
+}
+
+async function createSideBarElements(steps) {
+    let paraText;
+    console.log("Waiting for 2 seconds...")
+    await delay(2000);
+    console.log("2 seconds have passed")
+    for (let i = 0; i < steps.length; i++) {
+        paraText = steps[i];
         const sideBarItem = document.createElement("div");
         sideBarItem.classList.add("step-card");
         sideBarContainer.append(sideBarItem);
         const sideBarItemPara = document.createElement("p");
-        sideBarItemPara.textContent = "No Google Drive activity detected. Perhaps you forgot to add a transcript to the inputs folder?"
+        sideBarItemPara.textContent = paraText;
         sideBarItem.append(sideBarItemPara);
     }
+}
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
 }
