@@ -21,11 +21,15 @@ runBtn.addEventListener("click", () => {
 
 async function displayResponse(data) {
     if (data === "success") {
-        let steps = ["Connected to Google Drive Activity API.", "Retrieved Google Drive activities from inputs folder.", "Downloaded files to local dir.", "Generated AI Summary.", "Your AI summary was successfully uploaded to the outputs folder in your Google Drive!"]
+        let steps = ["Connected to Google Drive Activity API.", "Retrieved Google Drive activities from inputs folder.", "Downloaded files to local dir.", "Generated AI Summary.", "Your AI summary was successfully uploaded to the outputs folder in your Google Drive!"];
+        createSideBarElements(steps);
+    }
+    else if (data === "failed") {
+        let steps = ["No Google Drive activity detected. Perhaps you forgot to add a transcript to the inputs folder?"];
         createSideBarElements(steps);
     }
     else {
-        let steps = ["No Google Drive activity detected. Perhaps you forgot to add a transcript to the inputs folder?"]
+        let steps = ["Oops. An error occured and we were unable to complete your request."];
         createSideBarElements(steps);
     }
 }

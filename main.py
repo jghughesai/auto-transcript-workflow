@@ -8,12 +8,12 @@ def main():
     service1, creds = authorize_activity_api()
     if service1 is None or creds is None:
       notify_user("Unable to authenticate and retrieve google activity drive credentials.")
-      return
+      return "error"
     time_filter = get_time_filter()
     activities = get_activities(service1, time_filter)
     if activities == "unknown":
       notify_user("Error getting user's activities from Google Drive.")
-      return
+      return "error"
 
     if not activities:
       print("No activity.")
@@ -28,20 +28,20 @@ def main():
       service2, folder_id = get_drive_files(creds)
       if service2 is None or folder_id is None:
         notify_user("Unable to access Google Drive. Please check your network connection and try again later.")
-        return
+        return "error"
       print("\n\nget_drive_files func call completed.")
 
       files_dict = download_files(service2, target_ids, target_names)
       if files_dict is None:
         notify_user("Unable to download files.")
-        return
+        return "error"
       print("\n\ndownload_files func call completed.")
       print(f"files_dict: {files_dict}")
 
       summary_dict = get_summary(files_dict)
       if summary_dict is None:
         notify_user("Unable to get summary for transcript.")
-        return
+        return "error"
       print("\n\nget_summary func call completed.")
       print(f"summary_dict: {summary_dict}")
       
@@ -53,7 +53,7 @@ def main():
       return "success"
   except Exception as e:
     logging.error(f"Unexpected global error: {e}")
-    return
+    return "error"
 
 def create_output_files(summaries):
   try:

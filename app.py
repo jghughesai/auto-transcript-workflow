@@ -12,6 +12,7 @@ def index():
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
     response = main()
+    print(f"response: {response}")
     return jsonify(response)
 
 if __name__ == "__main__":
