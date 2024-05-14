@@ -61,7 +61,7 @@ def create_output_files(summaries):
       file_name = summary['name']
       file_content = summary['summary_content']
 
-      f = open(f"files/Summary-{file_name}", "w+")
+      f = open(f"files/Summary-{file_name}.docx", "w+")
       f.write(file_content)
   except IndexError as e:
     logging.error(f"Index error creating temporary summary files to local dir: {e}")
