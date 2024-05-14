@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request, jsonify, session
 from main import main
 
 app = Flask(__name__, template_folder="templates")
@@ -14,6 +14,12 @@ def run_main():
     response = main()
     print(f"response: {response}")
     return jsonify(response)
+
+@app.route('/set_api_key', methods=['POST'])
+def set_api_key():
+    data = request.get_json()
+    session['api_key'] = data['apiKey']
+    return jsonify({"message": "API Key stored successfully"})
 
 if __name__ == "__main__":
     app.run(debug=True)
