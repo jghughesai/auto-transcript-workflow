@@ -2,8 +2,11 @@ from drive import *
 from drive_activity import *
 from ai_summary import *
 
-def main():
+def main(api_key):
   try:
+    if client == None:
+      set_openai_key(api_key)
+
     # Authorize google API
     service1, creds = authorize_activity_api()
     if service1 is None or creds is None:
