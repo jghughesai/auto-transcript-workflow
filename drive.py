@@ -42,7 +42,7 @@ def download_files(service, file_ids, file_names):
 
   try:
     for file_name, file_id in zip(file_names, file_ids):
-      request = service.files().get_media(fileId=file_id)
+      request = service.files().export_media(fileId=file_id, mimeType='text/plain')
 
       file_buffer = io.BytesIO()
 
@@ -77,11 +77,12 @@ def upload_file(service, folder_id):
         }
 
         media = MediaFileUpload(f"files/{file}")
-        upload_file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+        service.files().create(body=file_metadata, media_body=media, fields="id").execute()
 
         print(f"\nUploaded file: {file}.")
+        delete_files_in_dir()
   
-    delete_files_in_dir()
+    # delete_files_in_dir()
   except HttpError as e:
     logging.error(f"An error occurred uploading the file(s): {e}")
     print(f"An error occurred uploading the file(s): {e}")
