@@ -40,7 +40,7 @@ def get_activities(service, time_filter):
   results = service.activity().query(body={
           "pageSize": 10,
           "ancestorName": f"items/{FOLDER_ID}",
-          "filter": f"time >= \"{time_filter}\" detail.action_detail_case:CREATE"
+          "filter": f"time >= \"{time_filter}\" detail.action_detail_case:(CREATE MOVE)"
       }).execute()
   activities = results.get("activities", [])
   if not activities:
@@ -61,7 +61,7 @@ def get_file_info(activities):
     return file_ids, file_names
 
 def get_time_filter():
-  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=5)
+  four_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(minutes=1)
   time_filter = four_hours_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
   return time_filter
 
