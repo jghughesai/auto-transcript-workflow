@@ -1,6 +1,25 @@
 const runBtn = document.querySelector("button");
 const sideBarContainer = document.getElementById("sideBarContainer");
 
+document.getElementById('apiKeyForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const apiKey = document.getElementById('apiKey').value;
+    const response = await fetch('/set_api_key', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ apiKey: apiKey })
+    });
+
+    if (response.ok) {
+        console.log('API Key set successfully');
+    } else {
+        console.error('Failed to set API Key')
+    }
+};
+
+
 runBtn.addEventListener("click", () => {
     console.log("Hi");
     fetch("/run_main")
