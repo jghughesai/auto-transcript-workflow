@@ -4,6 +4,7 @@ from main import main
 
 app = Flask(__name__, template_folder="templates")
 app.config["TESTING"] = True
+app.secret_key = os.urandom(24)
 
 @app.route("/", methods=["GET"])
 def index():

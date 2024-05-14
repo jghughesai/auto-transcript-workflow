@@ -1,4 +1,4 @@
-const runBtn = document.querySelector("button");
+const runBtn = document.getElementById("runBtn");
 const sideBarContainer = document.getElementById("sideBarContainer");
 
 document.getElementById('apiKeyForm').onsubmit = async (e) => {
