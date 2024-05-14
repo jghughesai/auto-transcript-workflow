@@ -4,6 +4,7 @@ from main import main
 
 app = Flask(__name__, template_folder="templates")
 app.config["TESTING"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
 app.secret_key = os.urandom(24)
 
 @app.route("/", methods=["GET"])
@@ -12,7 +13,11 @@ def index():
 
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
-    response = main()
+    api_key = session.get('api_key')
+    if not api_key:
+        print("api key not set....")
+        return jsonify(error="API Key not set"), 401
+    response = main(api_key)
     print(f"response: {response}")
     return jsonify(response)
 

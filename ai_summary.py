@@ -1,10 +1,14 @@
 import logging
 from openai import OpenAI
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-client = OpenAI()
+client = None
+
+def set_openai_key(api_key):
+  global client
+  client = OpenAI(api_key=api_key)
 
 def get_summary(files):
   try:
