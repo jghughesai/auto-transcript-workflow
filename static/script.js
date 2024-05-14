@@ -32,10 +32,10 @@ async function displayResponse(data) {
 
 async function createSideBarElements(steps) {
     let paraText;
-    console.log("Waiting for 2 seconds...")
-    await delay(2000);
-    console.log("2 seconds have passed")
     for (let i = 0; i < steps.length; i++) {
+        console.log("Waiting for 2 seconds...");
+        await delay(2000);
+        console.log("2 seconds have passed");
         paraText = steps[i];
         const sideBarItem = document.createElement("div");
         sideBarItem.classList.add("step-card");
