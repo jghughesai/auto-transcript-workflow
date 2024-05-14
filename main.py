@@ -17,7 +17,7 @@ def main():
 
     if not activities:
       print("No activity.")
-      return None
+      return "failed"
     else:
       print("Recent activity:")
       target_ids, target_names = get_file_info(activities)
