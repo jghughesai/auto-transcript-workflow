@@ -80,7 +80,7 @@ def upload_file(service, folder_id):
         service.files().create(body=file_metadata, media_body=media, fields="id").execute()
 
         print(f"\nUploaded file: {file}.")
-        delete_files_in_dir()
+    delete_files_in_dir()
   
     # delete_files_in_dir()
   except HttpError as e:
