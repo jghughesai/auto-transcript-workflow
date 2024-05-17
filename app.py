@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from main import main
 
 app = Flask(__name__, template_folder="templates")
@@ -13,6 +13,13 @@ logging.basicConfig(level=logging.INFO)
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
+
+@app.route("/home", methods=["GET"])
+def home():
+    if 'username' not in session:
+        print("username not in session")
+        return redirect(url_for('index'))
+    return render_template("home.html")
 
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
@@ -58,6 +65,21 @@ def set_api_key():
     else:
         print("No api key recieved")
         return jsonify({"error": "No api was retrieved from client side."}), 400
+    
+@app.route('/sign-in', methods=['POST'])
+def sign_in():
+    if request.method == "POST":
+        username_env = os.environ.get("USERNAME")
+        password_env = os.environ.get("PASSWORD")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if username and password and username == username_env and password == password_env:
+            session['username'] = username
+            print(username)
+            print(password)
+            return redirect("/home")
+        else:
+            return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True)

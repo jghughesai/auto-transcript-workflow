@@ -3,37 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Transcript Workflow</title>
-    <link rel="stylesheet" href="../static/style.css">
-    <script src="../static/script.js" defer></script>
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/sign-in.css">
 </head>
 <body>
-    <div class="main">
-        <header>
-            <h1 class="title">Auto Transcript Workflow</h1>
-            <h2 class="sub-title">Powered by OpenAI API</h2>
-        </header>
-        <div class="side-bar" id="sideBar">
-            <div class="side-bar-content-container" id="sideBarContainer">
-                <div class="side-bar-header">
-                    <h3>Steps</h3>
-                </div>
+    <header>
+        <h1 class="title">Auto Transcript Workflow</h1>
+        <h2 class="sub-title">Powered by OpenAI API</h2>
+    </header>
+    <section id="form-section">
+        <form action="/sign-in" method="post" class="sign-in-form">
+            <div class="form-header">
+                <h1>Sign In</h1>
             </div>
-        </div>
-        <section class="content">
-            <div class="content-container">
-                <div class="api-logo-container">
-                    <img src="../static/openai logo.png" width="100px" height="100px" alt="openai logo">
-                    <img src="../static/Google-Drive-logo.png" height="100px" alt="google drive logo">
-                </div>
-                <form id="apiKeyForm">
-                    <label for="apiKey">Enter your OpenAI API Key:</label>
-                    <input type="text" id="apiKey" name="apiKey" required>
-                    <button type="submit">Submit</button>
-                </form>
-                <button type="button" class="run-btn" id="runBtn" disabled>Click to Run</button>
-            </div>
-        </section>
-    </div>
+            <label for="username">Username</label>
+            <input type="text" name="username" class="sign-in-input username" id="username" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" class="sign-in-input password" id="password" required>
+            <button type="submit">Sign in</button>
+        </form>
+    </section>
 </body>
 </html>
