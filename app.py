@@ -77,13 +77,14 @@ def sign_in():
         password_env = os.environ.get("PASSWORD")
         username = request.form.get("username")
         password = request.form.get("password")
+        
         if username and password and username == username_env and password == password_env:
             session['username'] = username
-            print(username)
-            print(password)
-            return redirect("/home")
+            logging.info(f"User {username} signed in successfully")
+            return redirect(url_for("home"))
         else:
-            return redirect("/")
+            logging.warning("Invalid login attempt")
+            return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True)
