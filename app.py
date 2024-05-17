@@ -28,6 +28,9 @@ def home():
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
     api_key = session.get('api_key')
+    if 'username' not in session:
+        print("username not in session")
+        return jsonify("Username not found or session has expired. Please login again.")
     if not api_key:
         logging.error("API key not set.")
         return jsonify(error="API Key not set"), 401
@@ -77,7 +80,7 @@ def sign_in():
         password_env = os.environ.get("PASSWORD")
         username = request.form.get("username")
         password = request.form.get("password")
-        
+
         if username and password and username == username_env and password == password_env:
             session['username'] = username
             logging.info(f"User {username} signed in successfully")
