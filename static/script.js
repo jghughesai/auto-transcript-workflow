@@ -25,6 +25,13 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
 
 runBtn.addEventListener("click", () => {
     console.log("Hi");
+    const elements = document.querySelectorAll('.step-card');
+    elements.forEach(element => {
+        element.parentNode.removeChild(element);
+    });
+    
+    console.log("All side bar cards have been deleted.")
+
     fetch("/run_main")
         .then(response => {
             if (!response.ok) {
