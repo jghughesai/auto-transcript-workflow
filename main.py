@@ -1,11 +1,13 @@
+import logging
 from drive import *
 from drive_activity import *
 from ai_summary import *
 
+logging.basicConfig(level=logging.INFO)
+
 def main(api_key):
   try:
-    if client == None:
-      set_openai_key(api_key)
+    client = set_openai_key(api_key)
 
     # Authorize google API
     service1, creds = authorize_activity_api()
@@ -41,7 +43,7 @@ def main(api_key):
       print("\n\ndownload_files func call completed.")
       print(f"files_dict: {files_dict}")
 
-      summary_dict = get_summary(files_dict)
+      summary_dict = get_summary(files_dict, client)
       if summary_dict is None:
         notify_user("Unable to get summary for transcript.")
         return "error"
