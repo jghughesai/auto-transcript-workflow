@@ -20,9 +20,9 @@ header {
     align-items: center;
     gap: 10px;
     border-bottom: 1px solid rgb(182, 182, 182);
-    max-height: 101px;
-    min-height: 101px;
-    height: 101px;
+    max-height: 80px;
+    min-height: 80px;
+    height: 80px;
     z-index: 999;
     position: relative;
     box-shadow: 0 3px 3px -3px rgb(182, 182, 182);
@@ -31,6 +31,7 @@ header {
 
 .title {
     color: rgb(25, 42, 78);
+    margin-left: 30px;
 }
 
 .sub-title {
@@ -108,7 +109,7 @@ button:hover {
 
 .side-bar-content-container {
     display: block;
-    margin-top: 101px;
+    margin-top: 80px;
     padding: 10px 10px;
 }
 
@@ -126,7 +127,7 @@ button:hover {
     background-color: var(--secondary-surface);
     position: absolute;
     width: 100vw;
-    padding-top: 101px;
+    padding-top: 80px;
     padding-left: 233px;
     z-index: 0;
     height: 100%;
