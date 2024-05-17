@@ -14,7 +14,7 @@
 
 
 header {
-    background-color: var(--main-surface);
+    background-color: var(--sidebar-surface);
     border-bottom: 1px solid lightgray;
     display: flex;
     align-items: center;
@@ -39,6 +39,57 @@ header {
 
 .main {
     height: 100vh;
+}
+
+button {
+    background: none;
+    color: inherit;
+    outline: inherit;
+}
+
+button:hover {
+    background-color: rgb(25, 42, 78);
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    z-index: 999;
+    bottom: 0;
+}
+
+#apiKeyForm {
+    background-color: var(--sidebar-surface);
+    padding: 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+#apiKeyForm input {
+    border: none;
+    width: 200px;
+    height: 30px;
+    border-radius: 6px;
+    padding: 0px 5px;
+}
+
+#apiKeyForm button {
+    border: none;
+    width: 80px;
+    height: 30px;
+    border-radius: 8px;
+    border: 2px solid rgb(25, 42, 78);
+    font-weight: 600;
 }
 
 .side-bar {
@@ -90,21 +141,10 @@ header {
 }
 
 .run-btn {
-    background: none;
-    color: inherit;
-    outline: inherit;
     width: 130px;
     height: 50px;
     border-radius: 8px;
     border: 3px solid rgb(25, 42, 78);
     font-weight: 600;
     margin-top: 50px;
-}
-
-.run-btn:hover {
-    background-color: rgb(25, 42, 78);
-    border: none;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
 }
