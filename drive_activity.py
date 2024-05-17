@@ -57,6 +57,9 @@ def get_activities(service, time_filter):
   except HttpError as e:
     logging.error(f"Error fetching activities: {e}")
     raise ActivityFetchError(f"Failed to fetch activities: {e}")
+  except Exception as e:
+    logging.error(f"Error fetching activities: {e}")
+    raise ActivityFetchError(f"Failed to fetch activities: {e}")
 
 def get_file_info(activities):
     file_ids = []
@@ -92,7 +95,7 @@ def get_target_ids(target):
       return target_id
   except Exception as e:
     logging.error(f"Error getting target ID: {e}")
-    return "error"
+    raise
 
 def get_target_titles(target):
   try:
@@ -108,4 +111,4 @@ def get_target_titles(target):
       return title
   except Exception as e:
     logging.error(f"Error getting target title: {e}")
-    return "error"
+    raise
