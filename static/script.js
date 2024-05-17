@@ -51,7 +51,8 @@ async function displayResponse(data) {
         createSideBarElements(steps);
     }
     else {
-        let steps = ["Oops. An error occured and we were unable to complete your request."];
+        console.log(`Dataa: ${data}`)
+        let steps = [data['error']];
         createSideBarElements(steps);
     }
 }
