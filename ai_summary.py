@@ -1,16 +1,10 @@
 import logging
 from openai import OpenAI
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-client = None
 
 def set_openai_key(api_key):
-  global client
-  client = OpenAI(api_key=api_key)
+  return OpenAI(api_key=api_key)
 
-def get_summary(files):
+def get_summary(files, client):
   try:
     response_dict = {
       "responses": []
