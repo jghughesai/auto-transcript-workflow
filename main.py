@@ -28,6 +28,21 @@ def main(api_key):
     upload_summaries(service2, folder_id)
 
     return "success"
+  except GetSummaryError as e:
+    logging.error(f"GetSummaryError in main: {e}")
+    return "get_summary_error"
+  except OSError as e:
+    logging.error(f"OSError in main: {e}")
+    return "delete_files_error"
+  except UploadFileError as e:
+    logging.error(f"UploadFileError in main: {e}")
+    return "upload_file_error"
+  except DownloadFileError as e:
+    logging.error(f"DownloadFileError in main: {e}")
+    return "file_download_error"
+  except DriveAPIConnectionError as e:
+    logging.error(f"DriveAPIConnectionError in main: {e}")
+    return "drive_api_error"
   except AuthorizationError as e:
     logging.error(f"AuthorizationError in main: {e}")
     return "authorization_error"
