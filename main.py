@@ -8,57 +8,66 @@ logging.basicConfig(level=logging.INFO)
 def main(api_key):
   try:
     client = set_openai_key(api_key)
-
-    # Authorize google API
-    service1, creds = authorize_activity_api()
-    if service1 is None or creds is None:
-      notify_user("Unable to authenticate and retrieve google activity drive credentials.")
-      return "error"
-    time_filter = get_time_filter()
-    activities = get_activities(service1, time_filter)
-    if activities == "unknown":
-      notify_user("Error getting user's activities from Google Drive.")
-      return "error"
+    service1, creds = authorize_google_apis()
+    activities = fetch_activities(service1)
 
     if not activities:
-      print("No activity.")
+      logging.info("No activity detected.")
       return "failed"
-    else:
-      print("Recent activity:")
-      target_ids, target_names = get_file_info(activities)
-      print("\n\nget_file_name func call completed.")
-      print(f"target ids: {target_ids}")
-      print(f"target names: {target_names}")
-      
-      service2, folder_id = get_drive_files(creds)
-      if service2 is None or folder_id is None:
-        notify_user("Unable to access Google Drive. Please check your network connection and try again later.")
-        return "error"
-      print("\n\nget_drive_files func call completed.")
+    
+    logging.info("Recent activity detected.")
+    target_ids, target_names = get_file_info(activities)
+    logging.info(f"target_ids: {target_ids}. target_names: {target_names}")
 
-      files_dict = download_files(service2, target_ids, target_names)
-      if files_dict is None:
-        notify_user("Unable to download files.")
-        return "error"
-      print("\n\ndownload_files func call completed.")
-      print(f"files_dict: {files_dict}")
+    service2, folder_id = access_google_drive(creds)
+    files_dict = download_target_files(service2, target_ids, target_names)
 
-      summary_dict = get_summary(files_dict, client)
-      if summary_dict is None:
-        notify_user("Unable to get summary for transcript.")
-        return "error"
-      print("\n\nget_summary func call completed.")
-      print(f"summary_dict: {summary_dict}")
-      
-      create_output_files(summary_dict['responses'])
-      print("\n\ncreate_output_files func call completed.")
+    summary_dict = generate_summaries(files_dict, client)
 
-      upload_file(service2, folder_id)
-      print("\n\nupload_file func call completed.")
-      return "success"
+    create_output_files(summary_dict['responses'])
+    upload_summaries(service2, folder_id)
+
+    return "success"
   except Exception as e:
     logging.error(f"Unexpected global error: {e}")
     return "error"
+  
+
+def authorize_google_apis():
+  service1, creds = authorize_activity_api()
+  if service1 is None or creds is None:
+      notify_user("Unable to authenticate and retrieve google activity drive credentials.")
+      raise Exception("Google API authorization failed")
+  return service1, creds
+
+def fetch_activities(service):
+  time_filter = get_time_filter()
+  activities = get_activities(service, time_filter)
+  if activities == "unknown":
+    notify_user("Error getting user's activities from Google Drive.")
+    raise Exception("Error fetching activities")
+  return activities
+
+def access_google_drive(creds):
+  service, folder_id = get_drive_files(creds)
+  if service is None or folder_id is None:
+      notify_user("Unable to access Google Drive. Check your network connection and try again later.")
+      raise Exception("Google Drive access failed")
+  return service, folder_id
+
+def download_target_files(service2, target_ids, target_names):
+  files_dict = download_files(service2, target_ids, target_names)
+  if files_dict is None:
+    notify_user("Unable to download files.")
+    raise Exception("File download failed")
+  return files_dict
+
+def generate_summaries(files_dict, client):
+  summary_dict = get_summary(files_dict, client)
+  if summary_dict is None:
+    notify_user("Unable to generate summary for transcript.")
+    raise Exception("Summary generation failed")
+  return summary_dict
 
 def create_output_files(summaries):
   try:
@@ -70,9 +79,15 @@ def create_output_files(summaries):
       f.write(file_content)
   except IndexError as e:
     logging.error(f"Index error creating temporary summary files to local dir: {e}")
-    return
   except Exception as e:
     logging.error(f"Unexpected error occured: {e}")
+
+def upload_summaries(service, folder_id):
+  try:
+    upload_file(service, folder_id)
+  except Exception as e:
+    logging.error(f"Unexpected error occurred during file upload: {e}")
+    raise
 
 def notify_user(message):
   print(message)
