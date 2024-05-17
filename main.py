@@ -28,6 +28,9 @@ def main(api_key):
     upload_summaries(service2, folder_id)
 
     return "success"
+  except AuthorizationError as e:
+    logging.error(f"AuthorizationError in main: {e}")
+    return "authorization_error"
   except ActivityFetchError as e:
     logging.error(f"ActivityFetchError in main: {e}")
     return "activity_error"
