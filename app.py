@@ -1,4 +1,5 @@
 import os
+import logging
 from flask import Flask, render_template, request, jsonify, session
 from main import main
 
@@ -6,6 +7,8 @@ app = Flask(__name__, template_folder="templates")
 app.config["TESTING"] = True
 app.config["SESSION_COOKIE_SECURE"] = True
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
+
+logging.basicConfig(level=logging.INFO)
 
 @app.route("/", methods=["GET"])
 def index():
@@ -15,26 +18,41 @@ def index():
 def run_main():
     api_key = session.get('api_key')
     if not api_key:
-        print("api key not set....")
+        logging.error("API key not set.")
         return jsonify(error="API Key not set"), 401
-    response = main(api_key)
-    print(f"response: {response}")
-    return jsonify(response)
-
+    
+    try:
+        response = main(api_key)
+        logging.info(f"response: {response}")
+        if response == "success":
+            return jsonify(response)
+        elif response == "failed":
+            return jsonify(message="No activity detected"), 200
+        elif response == "get_summary_error":
+            return jsonify(error="There was a problem getting the ai generated summary."), 500
+        elif response == "drive_api_error":
+            return jsonify(error="There was a problem connecting to the Google Drive API."), 500
+        elif response == "authorization_error":
+            return jsonify(error="There was a problem authorizing your Google Drive credentials."), 500
+        else:
+            return jsonify(error="There was a problem on our end, we apologize."), 500
+    except Exception as e:
+        logging.error(f"Error in run_main: {e}")
+        return jsonify(error="An error occured"), 500
+    
 @app.route('/set_api_key', methods=['POST'])
 def set_api_key():
     data = request.get_json()
-    print(data)
+    
     if 'apiKey' in data:
-        print("apiKey found in data:", data['apiKey'])
         api_key = str(data['apiKey'])
-        print("Converted api_key to string:", api_key)
-        if api_key.startswith("sk-"):
+
+        if api_key and api_key.startswith("sk-"):
             session['api_key'] = api_key
-            print("Valid")
+            logging.info("API Key stored successfully")
             return jsonify({"message": "API Key stored successfully"}), 200
         else:
-            print("Not valid")
+            logging.warning("Invalid API Key format")
             return jsonify({"error": "API key is not a valid format."}), 400
     else:
         print("No api key recieved")
