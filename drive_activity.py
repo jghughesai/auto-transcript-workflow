@@ -38,6 +38,9 @@ def authorize_activity_api():
   except HttpError as e:
     logging.error(f"Error during activity api authorization: {e}")
     return None, None
+  
+class ActivityFetchError(Exception):
+  pass
 
 def get_activities(service, time_filter):
   try:
@@ -53,7 +56,7 @@ def get_activities(service, time_filter):
       return activities
   except HttpError as e:
     logging.error(f"Error fetching activities: {e}")
-    return None
+    raise ActivityFetchError(f"Failed to fetch activities: {e}")
 
 def get_file_info(activities):
     file_ids = []
