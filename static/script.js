@@ -14,6 +14,9 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
 
     if (response.ok) {
         console.log('API Key set successfully');
+        const apiKeyForm = document.getElementById('apiKeyForm');
+        apiKeyForm.style.display = "none";
+        runBtn.disabled = false;
     } else {
         console.error('Failed to set API Key')
     }
