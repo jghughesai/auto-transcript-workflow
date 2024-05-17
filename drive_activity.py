@@ -14,6 +14,12 @@ SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/a
 
 FOLDER_ID = "1h3_PAAGz9ewap6cqy1RihniOVe7KfoG4"
 
+class AuthorizationError(Exception):
+  pass
+
+class ActivityFetchError(Exception):
+  pass
+
 def authorize_activity_api():
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
@@ -37,10 +43,10 @@ def authorize_activity_api():
     return service, creds
   except HttpError as e:
     logging.error(f"Error during activity api authorization: {e}")
-    return None, None
-  
-class ActivityFetchError(Exception):
-  pass
+    raise AuthorizationError(f"Failed to authorize activity API: {e}")
+  except Exception as e:
+    logging.error(f"Error during activity api authorization: {e}")
+    raise AuthorizationError(f"Failed to authorize activity API: {e}")
 
 def get_activities(service, time_filter):
   try:
