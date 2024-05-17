@@ -1,6 +1,9 @@
 import logging
 from openai import OpenAI
 
+class GetSummaryError(Exception):
+  pass
+
 def set_openai_key(api_key):
   return OpenAI(api_key=api_key)
 
@@ -31,5 +34,5 @@ def get_summary(files, client):
 
     return response_dict
   except Exception as e:
-    logging.error(f"Unexpected error: {e}")
-    return None
+    logging.error(f"Unexpected error getting ai generated summary: {e}")
+    raise GetSummaryError(f"Unexpected error getting ai generated summary: {e}")
