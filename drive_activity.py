@@ -1,5 +1,5 @@
 import os.path
-
+import logging
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -32,22 +32,29 @@ def authorize_activity_api():
     # Save the credentials for the next run
     with open("token.json", "w") as token:
       token.write(creds.to_json())
-
-  service = build("driveactivity", "v2", credentials=creds)
-  return service, creds
+  try:
+    service = build("driveactivity", "v2", credentials=creds)
+    return service, creds
+  except HttpError as e:
+    logging.error(f"Error during activity api authorization: {e}")
+    return None, None
 
 def get_activities(service, time_filter):
-  results = service.activity().query(body={
-          "pageSize": 10,
-          "ancestorName": f"items/{FOLDER_ID}",
-          "filter": f"time >= \"{time_filter}\" detail.action_detail_case:(CREATE MOVE)"
-      }).execute()
-  activities = results.get("activities", [])
-  if not activities:
+  try:
+    results = service.activity().query(body={
+            "pageSize": 10,
+            "ancestorName": f"items/{FOLDER_ID}",
+            "filter": f"time >= \"{time_filter}\" detail.action_detail_case:(CREATE MOVE)"
+        }).execute()
+    activities = results.get("activities", [])
+    if not activities:
+      return None
+    else:
+      return activities
+  except HttpError as e:
+    logging.error(f"Error fetching activities: {e}")
     return None
-  else:
-    return activities
-  
+
 def get_file_info(activities):
     file_ids = []
     file_names = []
@@ -81,7 +88,8 @@ def get_target_ids(target):
       target_id = name[6:]
       return target_id
   except Exception as e:
-    return ("error", f"Error getting target title: {e}")
+    logging.error(f"Error getting target ID: {e}")
+    return "error"
 
 def get_target_titles(target):
   try:
@@ -96,4 +104,5 @@ def get_target_titles(target):
       title = parent.get("title", "unknown")
       return title
   except Exception as e:
-    return ("error", f"Error getting target title: {e}")
+    logging.error(f"Error getting target title: {e}")
+    return "error"
