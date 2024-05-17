@@ -2,10 +2,14 @@ import os
 import logging
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from main import main
+from datetime import timedelta
 
 app = Flask(__name__, template_folder="templates")
 app.config["TESTING"] = True
 app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
 logging.basicConfig(level=logging.INFO)
