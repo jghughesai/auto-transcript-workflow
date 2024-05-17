@@ -65,12 +65,16 @@ def get_file_info(activities):
     file_ids = []
     file_names = []
     for activity in activities:
-      ids = map(get_target_ids, activity["targets"])
-      names = map(get_target_titles, activity["targets"])
-      ids_str = ",".join(ids)
-      names_str = ",".join(names)
-      file_ids.append(ids_str)
-      file_names.append(names_str)
+      try:
+        ids = map(get_target_ids, activity["targets"])
+        names = map(get_target_titles, activity["targets"])
+        ids_str = ",".join(ids)
+        names_str = ",".join(names)
+        file_ids.append(ids_str)
+        file_names.append(names_str)
+      except Exception as e:
+        logging.error(f"Error in get_file_info: {e}")
+        raise
     return file_ids, file_names
 
 def get_time_filter():
