@@ -24,8 +24,21 @@ def run_main():
 @app.route('/set_api_key', methods=['POST'])
 def set_api_key():
     data = request.get_json()
-    session['api_key'] = data['apiKey']
-    return jsonify({"message": "API Key stored successfully"})
+    print(data)
+    if 'apiKey' in data:
+        print("apiKey found in data:", data['apiKey'])
+        api_key = str(data['apiKey'])
+        print("Converted api_key to string:", api_key)
+        if api_key.startswith("sk-"):
+            session['api_key'] = api_key
+            print("Valid")
+            return jsonify({"message": "API Key stored successfully"}), 200
+        else:
+            print("Not valid")
+            return jsonify({"error": "API key is not a valid format."}), 400
+    else:
+        print("No api key recieved")
+        return jsonify({"error": "No api was retrieved from client side."}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
