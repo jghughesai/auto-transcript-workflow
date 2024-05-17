@@ -5,7 +5,7 @@ from main import main
 app = Flask(__name__, template_folder="templates")
 app.config["TESTING"] = True
 app.config["SESSION_COOKIE_SECURE"] = True
-app.secret_key = os.urandom(24)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
 @app.route("/", methods=["GET"])
 def index():
