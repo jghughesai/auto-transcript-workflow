@@ -28,6 +28,9 @@ def main(api_key):
     upload_summaries(service2, folder_id)
 
     return "success"
+  except ActivityFetchError as e:
+    logging.error(f"ActivityFetchError in main: {e}")
+    return "activity_error"
   except Exception as e:
     logging.error(f"Unexpected global error: {e}")
     return "error"
@@ -41,12 +44,16 @@ def authorize_google_apis():
   return service1, creds
 
 def fetch_activities(service):
-  time_filter = get_time_filter()
-  activities = get_activities(service, time_filter)
-  if activities == "unknown":
-    notify_user("Error getting user's activities from Google Drive.")
-    raise Exception("Error fetching activities")
-  return activities
+  try:
+    time_filter = get_time_filter()
+    activities = get_activities(service, time_filter)
+    if activities == "unknown":
+      notify_user("Error getting user's activities from Google Drive.")
+      raise Exception("Error fetching activities")
+    return activities
+  except ActivityFetchError as e:
+    logging.error(f"ActivityFetchError in fetch_activities: {e}")
+    raise
 
 def access_google_drive(creds):
   service, folder_id = get_drive_files(creds)
