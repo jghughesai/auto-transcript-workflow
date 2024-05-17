@@ -10,6 +10,15 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 
+class DriveAPIConnectionError(Exception):
+  pass
+
+class DownloadFileError(Exception):
+  pass
+
+class UploadFileError(Exception):
+  pass
+
 def get_drive_files(creds):
   try:
     service = build("drive", "v3", credentials=creds)
@@ -26,13 +35,13 @@ def get_drive_files(creds):
 
   except HttpError as e:
     logging.error(f"An error occurred getting the list of files: {e}")
-    return None, None 
+    raise DriveAPIConnectionError("Error getting Google Drive API connection working.")
   except IndexError as e:
     logging.error(f"Index Error, no folders returned: {e}")
-    return None, None 
+    raise DriveAPIConnectionError("Error getting Google Drive API connection working.")
   except Exception as e:
     logging.error(f"Unexpected error: {e}")
-    return None, None 
+    raise DriveAPIConnectionError("Error getting Google Drive API connection working.")
   
 def download_files(service, file_ids, file_names):
   files_dict = {
@@ -63,10 +72,10 @@ def download_files(service, file_ids, file_names):
   except HttpError as e:
     # TODO(developer) - Handle errors from drive API.
     logging.error(f"An error occurred downloading the file(s): {e}")
-    return None
+    raise DownloadFileError(f"An error occurred downloading the file(s): {e}")
   except Exception as e:
-    logging.error(f"Unexpected error: {e}")
-    return None
+    logging.error(f"Unexpected error downloading file(s): {e}")
+    raise DownloadFileError(f"An error occurred downloading the file(s): {e}")
   
 def upload_file(service, folder_id):
   try:
@@ -85,7 +94,10 @@ def upload_file(service, folder_id):
     # delete_files_in_dir()
   except HttpError as e:
     logging.error(f"An error occurred uploading the file(s): {e}")
-    print(f"An error occurred uploading the file(s): {e}")
+    raise UploadFileError(f"An error occurred uploading the file(s): {e}")
+  except Exception as e:
+    logging.error(f"An error occurred uploading the file(s): {e}")
+    raise UploadFileError(f"An error occurred uploading the file(s): {e}")
 
 def delete_files_in_dir():
   try:
@@ -94,7 +106,8 @@ def delete_files_in_dir():
       file_path = os.path.join("files", file)
       if os.path.isfile(file_path):
         os.remove(file_path)
-    print("All files deleted successfully.")
+    logging.info("Successfully deleted all files in 'files' temporary dir")
   
-  except OSError:
-    print("Error occured while deleting files.")
+  except OSError as e:
+    logging.error(f"An error occurred deleting the file(s): {e}")
+    raise OSError
