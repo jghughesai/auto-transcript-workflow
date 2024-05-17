@@ -25,17 +25,18 @@ def run_main():
         response = main(api_key)
         logging.info(f"response: {response}")
         if response == "success":
+            logging.info("Execution Success!")
             return jsonify(response)
         elif response == "failed":
-            return jsonify(message="No activity detected"), 200
+            return jsonify(response), 200
         elif response == "get_summary_error":
-            return jsonify(error="There was a problem getting the ai generated summary."), 500
+            return jsonify(error="There was a problem getting the ai generated summary.")
         elif response == "drive_api_error":
-            return jsonify(error="There was a problem connecting to the Google Drive API."), 500
+            return jsonify(error="There was a problem connecting to the Google Drive API.")
         elif response == "authorization_error":
-            return jsonify(error="There was a problem authorizing your Google Drive credentials."), 500
+            return jsonify(error="There was a problem authorizing your Google Drive credentials.")
         else:
-            return jsonify(error="There was a problem on our end, we apologize."), 500
+            return jsonify(error="There was a problem on our end, we apologize.")
     except Exception as e:
         logging.error(f"Error in run_main: {e}")
         return jsonify(error="An error occured"), 500
