@@ -68,7 +68,7 @@ def set_api_key():
             return jsonify({"message": "API Key stored successfully"}), 200
         else:
             logging.warning("Invalid API Key format")
-            return jsonify({"error": "API key is not a valid format."}), 400
+            return jsonify(error="Invalid API Key format. Please enter a valid OpenAI key"), 400
     else:
         print("No api key recieved")
         return jsonify({"error": "No api was retrieved from client side."}), 400
