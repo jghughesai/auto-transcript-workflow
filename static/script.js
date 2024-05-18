@@ -18,7 +18,7 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
         apiKeyForm.style.display = "none";
         runBtn.disabled = false;
     } else {
-        console.error('Failed to set API Key')
+        alert("Failed to set API key. Did you type it wrong?")
     }
 };
 
