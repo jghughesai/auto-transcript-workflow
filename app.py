@@ -1,6 +1,9 @@
 import os
 import logging
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask_wtf import FlaskForm, CSRFProtect
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Length
 from main import main
 from datetime import timedelta
 
@@ -12,18 +15,26 @@ app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
+csrf = CSRFProtect(app)
+
 logging.basicConfig(level=logging.INFO)
 
-@app.route("/", methods=["GET"])
-def index():
-    return render_template("index.html")
+class APIKeyForm(FlaskForm):
+    api_key = StringField('OpenAI API Key', validators=[DataRequired(), Length(min=20, max=60)])
+    submit = SubmitField('Submit')
 
 @app.route("/home", methods=["GET"])
 def home():
+    form = APIKeyForm()
     if 'username' not in session:
         print("username not in session")
         return redirect(url_for('index'))
-    return render_template("home.html")
+    return render_template("home.html", form=form)
+
+@app.route("/", methods=["GET"])
+def index():
+    form = APIKeyForm()
+    return render_template("index.html", form=form)
 
 @app.route("/run_main", methods=["POST", "GET"])
 def run_main():
@@ -58,20 +69,18 @@ def run_main():
 @app.route('/set_api_key', methods=['POST'])
 def set_api_key():
     data = request.get_json()
-    
-    if 'apiKey' in data:
-        api_key = str(data['apiKey'])
+    form = APIKeyForm(data=data)
+    print(f"data: {data}")
 
-        if api_key and api_key.startswith("sk-"):
-            session['api_key'] = api_key
-            logging.info("API Key stored successfully")
-            return jsonify({"message": "API Key stored successfully"}), 200
-        else:
-            logging.warning("Invalid API Key format")
-            return jsonify(error="Invalid API Key format. Please enter a valid OpenAI key"), 400
+    if form.validate():
+        api_key = form.api_key.data
+        session['api_key'] = api_key
+        print(session['api_key'])
+        logging.info("API Key stored successfully")
+        return jsonify({"message": "API Key stored successfully"}), 200
     else:
-        print("No api key recieved")
-        return jsonify({"error": "No api was retrieved from client side."}), 400
+        logging.warning("Form validation failed: %s", form.errors)
+        return jsonify({"error": form.errors}), 400
     
 @app.route('/sign-in', methods=['POST'])
 def sign_in():
