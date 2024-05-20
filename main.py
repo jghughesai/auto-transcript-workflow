@@ -17,7 +17,6 @@ def main(api_key):
     
     logging.info("Recent activity detected.")
     target_ids, target_names = get_file_info(activities)
-    logging.info(f"target_ids: {target_ids}. target_names: {target_names}")
 
     service2, folder_id = access_google_drive(creds)
     files_dict = download_target_files(service2, target_ids, target_names)

@@ -9,6 +9,8 @@ from googleapiclient.errors import HttpError
 import datetime
 from datetime import timezone
 
+logging.basicConfig(level=logging.INFO)
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.activity.readonly"]
 
@@ -38,6 +40,7 @@ def authorize_activity_api():
       creds = flow.run_local_server(port=0)
     # Save the credentials for the next run
     with open("token.json", "w") as token:
+      os.chmod("token.json", 0o600)
       token.write(creds.to_json())
   try:
     service = build("driveactivity", "v2", credentials=creds)

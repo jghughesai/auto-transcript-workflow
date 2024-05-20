@@ -1,6 +1,8 @@
 import logging
 from openai import OpenAI
 
+logging.basicConfig(level=logging.INFO)
+
 class GetSummaryError(Exception):
   pass
 

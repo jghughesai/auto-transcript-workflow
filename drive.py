@@ -10,6 +10,8 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 
+logging.basicConfig(level=logging.INFO)
+
 class DriveAPIConnectionError(Exception):
   pass
 
