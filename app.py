@@ -93,8 +93,8 @@ def sign_in():
             username = form.username.data
             password = form.password.data
             
-            username_env = os.environ.get("USERNAME")
-            password_env = os.environ.get("PASSWORD")
+            username_env = os.environ.get("APP_USERNAME")
+            password_env = os.environ.get("APP_PASSWORD")
 
             if username and password and username == username_env and password == password_env:
                 session['username'] = username
