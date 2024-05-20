@@ -12,15 +12,25 @@
         <h2 class="sub-title">Powered by OpenAI API</h2>
     </header>
     <section id="form-section">
-        <form action="/sign-in" method="post" class="sign-in-form">
+        <form action="/sign-in" method="post" class="sign-in-form" id="signInForm">
+            {{ form.hidden_tag() }}
             <div class="form-header">
                 <h1>Sign In</h1>
             </div>
-            <label for="username">Username</label>
+            <div class="form-group">
+                {{ form.username.label(class="form-control-label") }}
+                {{ form.username(class="form-control sign-in-input username", id="username")}}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-control-label") }}
+                {{ form.password(class="form-control sign-in-input password", id="password")}}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+            <!-- <label for="username">Username</label>
             <input type="text" name="username" class="sign-in-input username" id="username" required>
             <label for="password">Password</label>
             <input type="password" name="password" class="sign-in-input password" id="password" required>
-            <button type="submit">Sign in</button>
+            <button type="submit">Sign in</button> -->
         </form>
     </section>
 </body>

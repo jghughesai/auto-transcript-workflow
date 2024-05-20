@@ -27,8 +27,11 @@
                     <img src="../static/Google-Drive-logo.png" height="100px" alt="google drive logo">
                 </div>
                 <form id="apiKeyForm">
-                    <label for="apiKey">Enter your OpenAI API Key:</label>
-                    <input type="text" id="apiKey" name="apiKey" required>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.api_key.label(class="form-control-label") }}
+                        {{ form.api_key(class="form-control", id="api_key") }}
+                    </div>
                     <button type="submit">Submit</button>
                 </form>
                 <button type="button" class="run-btn" id="runBtn" disabled>Click to Run</button>

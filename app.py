@@ -23,6 +23,11 @@ class APIKeyForm(FlaskForm):
     api_key = StringField('OpenAI API Key', validators=[DataRequired(), Length(min=20, max=60)])
     submit = SubmitField('Submit')
 
+class SignInForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=5, max=60)])
+    password = StringField('Password', validators=[DataRequired(), Length(min=5, max=60)])
+    submit = SubmitField('Submit')
+
 @app.route("/home", methods=["GET"])
 def home():
     form = APIKeyForm()
@@ -33,7 +38,7 @@ def home():
 
 @app.route("/", methods=["GET"])
 def index():
-    form = APIKeyForm()
+    form = SignInForm()
     return render_template("index.html", form=form)
 
 @app.route("/run_main", methods=["POST", "GET"])
@@ -85,18 +90,20 @@ def set_api_key():
 @app.route('/sign-in', methods=['POST'])
 def sign_in():
     if request.method == "POST":
-        username_env = os.environ.get("USERNAME")
-        password_env = os.environ.get("PASSWORD")
-        username = request.form.get("username")
-        password = request.form.get("password")
+        form = SignInForm()
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            print(f"form username: {username}")
+            print(f"form password: {password}")
+            
+            username_env = os.environ.get("USERNAME")
+            password_env = os.environ.get("PASSWORD")
 
-        if username and password and username == username_env and password == password_env:
-            session['username'] = username
-            logging.info(f"User {username} signed in successfully")
-            return redirect(url_for("home"))
+            return "Success"
         else:
-            logging.warning("Invalid login attempt")
-            return redirect(url_for('index'))
+            logging.warning("Form validation failed: %s", form.errors)
+            return "Failed"
 
 if __name__ == "__main__":
     app.run(debug=True)
