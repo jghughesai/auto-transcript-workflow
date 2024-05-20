@@ -32,7 +32,6 @@ class SignInForm(FlaskForm):
 def home():
     form = APIKeyForm()
     if 'username' not in session:
-        print("username not in session")
         return redirect(url_for('index'))
     return render_template("home.html", form=form)
 
@@ -45,7 +44,6 @@ def index():
 def run_main():
     api_key = session.get('api_key')
     if 'username' not in session:
-        print("username not in session")
         return jsonify("Username not found or session has expired. Please login again.")
     if not api_key:
         logging.error("API key not set.")
@@ -75,17 +73,17 @@ def run_main():
 def set_api_key():
     data = request.get_json()
     form = APIKeyForm(data=data)
-    print(f"data: {data}")
 
     if form.validate():
         api_key = form.api_key.data
         session['api_key'] = api_key
-        print(session['api_key'])
+        session.modified = True
+
         logging.info("API Key stored successfully")
         return jsonify({"message": "API Key stored successfully"}), 200
     else:
         logging.warning("Form validation failed: %s", form.errors)
-        return jsonify({"error": form.errors}), 400
+        return jsonify({"error": "Failed to validate form"}), 400
     
 @app.route('/sign-in', methods=['POST'])
 def sign_in():
@@ -94,15 +92,15 @@ def sign_in():
         if form.validate_on_submit():
             username = form.username.data
             password = form.password.data
-            print(f"form username: {username}")
-            print(f"form password: {password}")
             
             username_env = os.environ.get("USERNAME")
             password_env = os.environ.get("PASSWORD")
 
             if username and password and username == username_env and password == password_env:
                 session['username'] = username
-                logging.info(f"User {username} signed in successfully")
+                session.permanent = True
+                session.modified = True
+                logging.info(f"User signed in successfully")
                 return redirect(url_for("home"))
             else:
                 logging.warning("Invalid login attempt")
@@ -113,4 +111,4 @@ def sign_in():
             return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.environ.get('FLASK_ENV') != 'production')

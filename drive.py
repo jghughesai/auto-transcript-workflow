@@ -87,8 +87,6 @@ def upload_file(service, folder_id):
 
         media = MediaFileUpload(f"files/{file}")
         service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-
-        print(f"\nUploaded file: {file}.")
     delete_files_in_dir()
   
     # delete_files_in_dir()
@@ -106,7 +104,7 @@ def delete_files_in_dir():
       file_path = os.path.join("files", file)
       if os.path.isfile(file_path):
         os.remove(file_path)
-    logging.info("Successfully deleted all files in 'files' temporary dir")
+    logging.info("Successfully deleted all files in 'files'")
   
   except OSError as e:
     logging.error(f"An error occurred deleting the file(s): {e}")

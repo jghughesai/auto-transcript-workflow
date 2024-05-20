@@ -1,4 +1,5 @@
 import os.path
+import os
 import logging
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -12,7 +13,7 @@ from datetime import timezone
 SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.activity.readonly"]
 
 
-FOLDER_ID = "1h3_PAAGz9ewap6cqy1RihniOVe7KfoG4"
+FOLDER_ID = os.environ.get("DRIVE_FOLDER_ID")
 
 class AuthorizationError(Exception):
   pass
