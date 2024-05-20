@@ -5,8 +5,6 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
     e.preventDefault();
     const apiKey = document.getElementById('api_key').value;  // Ensure this matches the form field ID
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-    console.log(`csrftoken: ${csrfToken}`)
-    console.log(`apiKey: ${apiKey}`)
 
     const response = await fetch('/set_api_key', {
         method: 'POST',
@@ -19,7 +17,6 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
 
     if (response.ok) {
         const data = await response.json();
-        console.log('API Key set successfully');
         const apiKeyForm = document.getElementById('apiKeyForm');
         apiKeyForm.style.display = "none";
         runBtn.disabled = false;
@@ -32,13 +29,10 @@ document.getElementById('apiKeyForm').onsubmit = async (e) => {
 
 
 runBtn.addEventListener("click", () => {
-    console.log("Hi");
     const elements = document.querySelectorAll('.step-card');
     elements.forEach(element => {
         element.parentNode.removeChild(element);
     });
-    
-    console.log("All side bar cards have been deleted.")
 
     fetch("/run_main")
         .then(response => {
@@ -48,11 +42,10 @@ runBtn.addEventListener("click", () => {
             return response.json();
         })
         .then(data => {
-            console.log("Server Response: ", data)
             displayResponse(data)
         })
         .catch(error => {
-            console.error("Error:", error);
+            console.error("Error");
         })
 })
 
@@ -66,7 +59,6 @@ async function displayResponse(data) {
         createSideBarElements(steps);
     }
     else {
-        console.log(`Dataa: ${data}`)
         let steps = [data['error']];
         createSideBarElements(steps);
     }
@@ -75,9 +67,7 @@ async function displayResponse(data) {
 async function createSideBarElements(steps) {
     let paraText;
     for (let i = 0; i < steps.length; i++) {
-        console.log("Waiting for 2 seconds...");
         await delay(2000);
-        console.log("2 seconds have passed");
         paraText = steps[i];
         const sideBarItem = document.createElement("div");
         sideBarItem.classList.add("step-card");
