@@ -100,7 +100,14 @@ def sign_in():
             username_env = os.environ.get("USERNAME")
             password_env = os.environ.get("PASSWORD")
 
-            return "Success"
+            if username and password and username == username_env and password == password_env:
+                session['username'] = username
+                logging.info(f"User {username} signed in successfully")
+                return redirect(url_for("home"))
+            else:
+                logging.warning("Invalid login attempt")
+                return redirect(url_for('index'))
+
         else:
             logging.warning("Form validation failed: %s", form.errors)
             return "Failed"
