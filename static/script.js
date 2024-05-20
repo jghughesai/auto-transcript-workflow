@@ -3,22 +3,30 @@ const sideBarContainer = document.getElementById("sideBarContainer");
 
 document.getElementById('apiKeyForm').onsubmit = async (e) => {
     e.preventDefault();
-    const apiKey = document.getElementById('apiKey').value;
+    const apiKey = document.getElementById('api_key').value;  // Ensure this matches the form field ID
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    console.log(`csrftoken: ${csrfToken}`)
+    console.log(`apiKey: ${apiKey}`)
+
     const response = await fetch('/set_api_key', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
         },
-        body: JSON.stringify({ apiKey: apiKey })
+        body: JSON.stringify({ api_key: apiKey })  // Ensure the key matches the form field name
     });
 
     if (response.ok) {
+        const data = await response.json();
         console.log('API Key set successfully');
         const apiKeyForm = document.getElementById('apiKeyForm');
         apiKeyForm.style.display = "none";
         runBtn.disabled = false;
+        alert(data.message);
     } else {
-        alert("Failed to set API key. Did you type it wrong?")
+        const data = await response.json();
+        alert("Failed to set API key. " + (data.error || "Did you type it wrong?"));
     }
 };
 
