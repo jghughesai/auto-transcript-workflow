@@ -110,7 +110,7 @@ def sign_in():
 
         else:
             logging.warning("Form validation failed: %s", form.errors)
-            return "Failed"
+            return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)
