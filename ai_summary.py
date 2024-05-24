@@ -20,10 +20,10 @@ def get_summary(files, client):
       file_content = file["file_content"]
 
       completion = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model="gpt-4o",
         messages=[
         {"role": "system", "content": "You are an expert summarizer of work meeting transcripts."},
-        {"role": "user", "content": f"Create a detailed and accurate summary of the following work meeting transcript: {file_content}"}
+        {"role": "user", "content": f"Create a detailed and accurate summary of the following work meeting transcript: {file_content}. Make sure the summary is not too concise and has length to it."}
         ]
       )
 
