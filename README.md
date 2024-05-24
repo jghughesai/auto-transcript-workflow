@@ -58,7 +58,13 @@ This project does not have a specified license.
 For questions or feedback, please contact [jghughesai@gmail.com](mailto:jghughesai@gmail.com).
 
 ## Screenshots
-*Include screenshots here*
+[url=https://postimg.cc/yJhKF58k][img]https://i.postimg.cc/yJhKF58k/1.jpg[/img][/url]
+
+[url=https://postimg.cc/629Xz08z][img]https://i.postimg.cc/629Xz08z/2.jpg[/img][/url]
+
+[url=https://postimg.cc/WFXPykrV][img]https://i.postimg.cc/WFXPykrV/3.jpg[/img][/url]
+
+[url=https://postimg.cc/0Kjq1ydw][img]https://i.postimg.cc/0Kjq1ydw/4.jpg[/img][/url]
 
 ## Credits
 - **APIs Used**:
